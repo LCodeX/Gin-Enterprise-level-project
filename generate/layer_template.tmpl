@@ -1,0 +1,71 @@
+{{define "controller"}}
+package controllers
+
+import (
+	"yky-gin/services"
+	"yky-gin/utils/resp"
+	"github.com/gin-gonic/gin"
+)
+
+type {{.Name}}Controller struct {
+	{{.Name | ToLower}}Service *services.{{.Name}}Service
+}
+
+func New{{.Name}}Controller({{.Name | ToLower}}Service *services.{{.Name}}Service) *{{.Name}}Controller {
+	return &{{.Name}}Controller{
+		{{.Name | ToLower}}Service: {{.Name | ToLower}}Service,
+	}
+}
+
+func (p *{{.Name}}Controller) Get{{.Name}}(c *gin.Context) {
+	data, err := p.{{.Name | ToLower}}Service.Get{{.Name}}()
+	if err != nil {
+		resp.RespHelper.Fail(c, resp.Error.Code, err)
+		return
+	}
+	resp.RespHelper.OK(c, data)
+}
+{{end}}
+
+{{define "service"}}
+package services
+
+import (
+	"yky-gin/dao"
+	"yky-gin/models"
+)
+
+type {{.Name}}Service struct {
+	{{.Name | ToLower}}Dao *dao.{{.Name}}DAO
+}
+
+func New{{.Name}}Service({{.Name | ToLower}}Dao *dao.{{.Name}}DAO) *{{.Name}}Service {
+	return &{{.Name}}Service{
+		{{.Name | ToLower}}Dao: {{.Name | ToLower}}Dao,
+	}
+}
+
+func (s *{{.Name}}Service) Get{{.Name}}() (*models.{{.Name}}, error) {
+	return s.{{.Name | ToLower}}Dao.Get{{.Name}}()
+}
+{{end}}
+
+{{define "dao"}}
+package dao
+
+import (
+	"yky-gin/db"
+	"yky-gin/models"
+)
+
+type {{.Name}}DAO struct{}
+
+func (dao *{{.Name}}DAO) Get{{.Name}}() (*models.{{.Name}}, error) {
+	var data *models.{{.Name}}
+	result := db.Db.First(&data)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return data, nil
+}
+{{end}}

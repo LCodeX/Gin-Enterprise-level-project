@@ -17,6 +17,10 @@ func NewAppConfigController(appConfigService *services.AppConfigService) *AppCon
 	}
 }
 func (p *AppConfigController) GetAppConfig(c *gin.Context) {
-	appConfig, _ := p.appConfigService.GetAppConfig()
+	appConfig, err := p.appConfigService.GetAppConfig()
+	if err != nil {
+		resp.RespHelper.Fail(c, resp.Error.Code, err)
+		return
+	}
 	resp.RespHelper.OK(c, appConfig)
 }

@@ -14,6 +14,7 @@ var (
 	ServiceUnavailable  = StatusCode{Code: 503, Message: "Service Unavailable"}
 
 	Success            = StatusCode{Code: 1000, Message: "Ok"}
+	Error              = StatusCode{Code: 1009, Message: "Error"}
 	UserAlreadyExists  = StatusCode{Code: 1001, Message: "User already exists"}
 	UserNotFound       = StatusCode{Code: 1002, Message: "User not found"}
 	InvalidCredentials = StatusCode{Code: 1003, Message: "Invalid username or password"}

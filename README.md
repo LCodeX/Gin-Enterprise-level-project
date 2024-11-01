@@ -47,6 +47,11 @@ An architectural foundation for web development projects built with Gin, offered
     └── validator_errors.go
 ```
 
+## Generate Code
+```
+go generate ./generate
+```
+
 ## Deploy
 
 First build the executable file
@@ -69,3 +74,4 @@ kill -INT $(cat pid) && ./morningo # graceful stop the process and restart
 - [X] Gorm 
 - [X] Swagger
 - [X] JWT
+- [X] Code generator
