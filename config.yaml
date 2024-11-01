@@ -1,0 +1,15 @@
+database:
+  host: "127.0.0.1"
+  port: 3306
+  user: "root"
+  password: ""
+  dbname: "yin_ke_yun"
+  charset: "utf8mb4"
+  parseTime: true
+  loc: "Local"
+
+redis:
+  host: "localhost"
+  port: 6379
+  password: ""     
+  db: 0            
