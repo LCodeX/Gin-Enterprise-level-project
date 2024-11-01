@@ -2,9 +2,7 @@ package router
 
 import (
 	"yky-gin/controllers"
-	"yky-gin/dao"
 	middlewares "yky-gin/middleware"
-	"yky-gin/services"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -12,20 +10,20 @@ import (
 )
 
 func Router() *gin.Engine {
+	app := controllers.NewApp()
 	r := gin.Default()
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	v1 := r.Group("api/v1")
 	{
 		user := v1.Group("/user")
 		{
-			userController := controllers.NewUserController(services.NewUserService(&dao.UserDAO{}))
-			user.POST("/register", userController.Register)
-			user.POST("/login", userController.Login)
+			user.POST("/register", app.UserController.Register)
+			user.POST("/login", app.UserController.Login)
 		}
-		packages := v1.Group("/packages")
-		packages.Use(middlewares.JWTAuth())
+		v1.Use(middlewares.JWTAuth())
 		{
-			packages.GET("/list", controllers.PackagesController{}.GetPackagesList)
+			v1.GET("/packages", app.PackagesController.GetPackagesList)
+			v1.GET("/app-version", app.AppVersionController.GetAppVersion)
 		}
 	}
 	return r

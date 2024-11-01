@@ -5,6 +5,16 @@ import (
 	"yky-gin/models"
 )
 
-func GetPackageList() (models.Packages, error) {
-	return dao.GetPackageList()
+type PackageService struct {
+	PackageDao *dao.PackagesDao
+}
+
+func NewPackagesService(packagesDao *dao.PackagesDao) *PackageService {
+	return &PackageService{
+		PackageDao: packagesDao,
+	}
+}
+
+func (p *PackageService) GetPackageList() (models.Packages, error) {
+	return p.PackageDao.GetPackageList()
 }
