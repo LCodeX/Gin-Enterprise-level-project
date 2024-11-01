@@ -24,6 +24,7 @@ func Router() *gin.Engine {
 		{
 			v1.GET("/packages", app.PackagesController.GetPackagesList)
 			v1.GET("/app-version", app.AppVersionController.GetAppVersion)
+			v1.GET("/app-config", app.AppConfigController.GetAppConfig)
 		}
 	}
 	return r

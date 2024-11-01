@@ -9,6 +9,7 @@ type App struct {
 	AppVersionController *AppVersionController
 	PackagesController   *PackagesController
 	UserController       *UserController
+	AppConfigController  *AppConfigController
 }
 
 func NewApp() *App {
@@ -19,6 +20,7 @@ func NewApp() *App {
 		PackagesController: NewPackagesController(
 			services.NewPackagesService(&dao.PackagesDao{}),
 		),
-		UserController: NewUserController(services.NewUserService(&dao.UserDAO{})),
+		UserController:      NewUserController(services.NewUserService(&dao.UserDAO{})),
+		AppConfigController: NewAppConfigController(services.NewAppConfigService(&dao.AppConfigDAO{})),
 	}
 }
