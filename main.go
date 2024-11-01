@@ -8,8 +8,6 @@ import (
 	"yky-gin/utils/logger"
 	"yky-gin/validator"
 
-	_ "yky-gin/docs"
-
 	"github.com/gin-gonic/gin/binding"
 	playgroundValidator "github.com/go-playground/validator/v10"
 )
@@ -28,5 +26,7 @@ func main() {
 		v.RegisterValidation("starts_with_letter", validator.StartsWithLetter)
 	}
 	r := router.Router()
-	r.Run(":9999")
+	serverConfig := configMap["server"].(map[interface{}]interface{})
+	port := serverConfig["port"].(int)
+	r.Run(fmt.Sprintf(":%d", port))
 }
