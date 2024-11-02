@@ -33,16 +33,16 @@ func NewUserController(userService *services.UserService) *UserController {
 // @Router       /user/create [post]
 func (uc *UserController) Register(c *gin.Context) {
 	var req struct {
-		Username string `json:"username" binding:"required,min=3,max=10,starts_with_letter,alphanum"`
 		Password string `json:"password" binding:"required,min=6,max=20"`
 		Phone    string `json:"phone" binding:"required,zh_phone_number"`
+		SmsCode  string `json:"sms_code" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": validator.TranslateError(err)})
 		return
 	}
-	user, token, err := uc.UserService.Register(req.Username, req.Password, req.Phone)
+	user, token, err := uc.UserService.Register(req.Password, req.Phone, req.SmsCode)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 		return
@@ -86,8 +86,8 @@ func (uc *UserController) ForgetPassword(c *gin.Context) {
 
 func (uc *UserController) Login(c *gin.Context) {
 	var req struct {
-		Username string `json:"username" binding:"required"`
-		Password string `json:"password" binding:"required"`
+		PhoneNumber string `json:"phone_number" binding:"required,zh_phone_number"`
+		Password    string `json:"password" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -95,7 +95,7 @@ func (uc *UserController) Login(c *gin.Context) {
 		return
 	}
 
-	authData, err := uc.UserService.Login(req.Username, req.Password)
+	authData, err := uc.UserService.Login(req.PhoneNumber, req.Password)
 	if err != nil {
 		resp.RespHelper.Fail(c, resp.InvalidCredentials.Code, resp.InvalidCredentials.Message)
 		return

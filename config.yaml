@@ -1,4 +1,4 @@
-env: "PROD"  
+env: "DEVELOPMENT"  
 server:
   port: 9999
 

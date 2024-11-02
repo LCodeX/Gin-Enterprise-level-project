@@ -19,9 +19,12 @@ func NewUserService(userDAO *dao.UserDAO) *UserService {
 	return &UserService{UserDAO: userDAO}
 }
 
-func (s *UserService) Register(username, password, phone string) (*models.User, string, error) {
-	if _, err := s.UserDAO.FindByUsername(username); err == nil {
-		return nil, "", errors.New("username already exists")
+func (s *UserService) Register(password, phone_number string, sms_code string) (*models.User, string, error) {
+	if _, err := s.UserDAO.FindByPhoneNumber(phone_number); err == nil {
+		return nil, "", errors.New("user already exists")
+	}
+	if sms_code != "test" {
+		return nil, "", errors.New("sms code error")
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -30,9 +33,8 @@ func (s *UserService) Register(username, password, phone string) (*models.User, 
 	}
 
 	user := &models.User{
-		Username:    username,
 		Password:    string(hashedPassword),
-		PhoneNumber: phone,
+		PhoneNumber: phone_number,
 	}
 
 	if err := s.UserDAO.CreateUser(user); err != nil {
@@ -42,8 +44,8 @@ func (s *UserService) Register(username, password, phone string) (*models.User, 
 	return user, token, nil
 }
 
-func (s *UserService) Login(username, password string) (interface{}, error) {
-	user, err := s.UserDAO.FindByUsername(username)
+func (s *UserService) Login(phone_number string, password string) (interface{}, error) {
+	user, err := s.UserDAO.FindByPhoneNumber(phone_number)
 	if err != nil {
 		return "", errors.New("user not found")
 	}
