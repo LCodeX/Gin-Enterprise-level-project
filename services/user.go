@@ -58,7 +58,7 @@ func (s *UserService) Login(username, password string) (interface{}, error) {
 	}, nil
 }
 
-func (s *UserService) UpdateUserPassword(req dto.UpdatePasswordRequest, user_id uint) error {
+func (s *UserService) UpdateUserPassword(req dto.UpdatePasswordRequest, user_id uint64) error {
 	user, err := s.UserDAO.FindByUserId(user_id)
 	if err != nil {
 		return errors.New("user not found")

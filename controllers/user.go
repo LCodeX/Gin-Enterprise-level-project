@@ -61,7 +61,7 @@ func (uc *UserController) UpdateUserPassword(c *gin.Context) {
 		resp.RespHelper.Fail(c, resp.Error.Code, err.Error())
 		return
 	}
-	user_id := c.MustGet("userID").(uint)
+	user_id := c.MustGet("userID").(uint64)
 	err := uc.UserService.UpdateUserPassword(req, user_id)
 	if err != nil {
 		resp.RespHelper.Fail(c, resp.Error.Code, err.Error())
