@@ -23,6 +23,13 @@ func InitLogger() {
 	warnLogger = newLogger("logs/warn", logrus.WarnLevel)
 	errorLogger = newLogger("logs/error", logrus.ErrorLevel)
 }
+func GinErrorLogger() *logrus.Logger {
+	return errorLogger
+}
+
+func GinInfoLogger() *logrus.Logger {
+	return infoLogger
+}
 
 func newLogger(path string, level logrus.Level) *logrus.Logger {
 	logger := logrus.New()

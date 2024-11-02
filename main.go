@@ -7,9 +7,6 @@ import (
 	"yky-gin/router"
 	"yky-gin/utils/logger"
 	"yky-gin/validator"
-
-	"github.com/gin-gonic/gin/binding"
-	playgroundValidator "github.com/go-playground/validator/v10"
 )
 
 func main() {
@@ -22,11 +19,9 @@ func main() {
 	redisConfig := configMap["redis"].(map[interface{}]interface{})
 	db.InitRedis(redisConfig)
 	logger.InitLogger()
-	if v, ok := binding.Validator.Engine().(*playgroundValidator.Validate); ok {
-		v.RegisterValidation("starts_with_letter", validator.StartsWithLetter)
-		v.RegisterValidation("zh_phone_number", validator.IsPhoneNumber)
-	}
-	r := router.Router()
+	validator.InitValidator()
+	serverMode := configMap["env"].(string)
+	r := router.Router(serverMode)
 	serverConfig := configMap["server"].(map[interface{}]interface{})
 	port := serverConfig["port"].(int)
 	r.Run(fmt.Sprintf(":%d", port))
