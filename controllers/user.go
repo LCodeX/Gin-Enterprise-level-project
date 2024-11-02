@@ -54,10 +54,25 @@ func (uc *UserController) Register(c *gin.Context) {
 	resp.RespHelper.OK(c, responseData)
 }
 
+func (uc *UserController) UpdateUserPassword(c *gin.Context) {
+	var req dto.UpdatePasswordRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		resp.RespHelper.Fail(c, resp.Error.Code, err.Error())
+		return
+	}
+	user_id := c.MustGet("userID").(uint64)
+	err := uc.UserService.UpdateUserPassword(req, user_id)
+	if err != nil {
+		resp.RespHelper.Fail(c, resp.Error.Code, err.Error())
+		return
+	}
+	resp.RespHelper.OK(c, nil)
+}
+
 func (uc *UserController) ForgetPassword(c *gin.Context) {
 	var req dto.ForgetPasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		resp.RespHelper.Fail(c, resp.RequestDataError.Code, resp.RequestDataError.Message)
+		resp.RespHelper.Fail(c, resp.Error.Code, err.Error())
 		return
 	}
 	err := uc.UserService.ForgotPassword(req)

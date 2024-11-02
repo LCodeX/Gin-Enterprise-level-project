@@ -38,11 +38,6 @@ func (s *UserService) Register(username, password, phone string) (*models.User, 
 	if err := s.UserDAO.CreateUser(user); err != nil {
 		return nil, "", err
 	}
-	// response := &models.UserResponse{
-	// 	Username: user.Username,
-	// 	Phone:    user.PhoneNumber,
-	// 	Nickname: user.Nickname,
-	// }
 	token, _ := utils.GenerateToken(user.ID)
 	return user, token, nil
 }
@@ -61,6 +56,25 @@ func (s *UserService) Login(username, password string) (interface{}, error) {
 		"token":    token,
 		"userInfo": user,
 	}, nil
+}
+
+func (s *UserService) UpdateUserPassword(req dto.UpdatePasswordRequest, user_id uint64) error {
+	user, err := s.UserDAO.FindByUserId(user_id)
+	if err != nil {
+		return errors.New("user not found")
+	}
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.OldPassword)); err != nil {
+		return errors.New("old password is not correct")
+	}
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	user.Password = string(hashedPassword)
+	if err := s.UserDAO.Update(user); err != nil {
+		return errors.New("failed to update password")
+	}
+	return nil
 }
 
 func (s *UserService) ForgotPassword(req dto.ForgetPasswordRequest) error {

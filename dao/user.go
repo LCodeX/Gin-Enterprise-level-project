@@ -16,6 +16,15 @@ func (dao *UserDAO) FindByUsername(username string) (*models.User, error) {
 	return &user, nil
 }
 
+func (dao *UserDAO) FindByUserId(id uint64) (*models.User, error) {
+	var user models.User
+	result := db.Db.Where("id = ?", id).First(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &user, nil
+}
+
 func (dao *UserDAO) FindByPhoneNumber(phoneNumber string) (*models.User, error) {
 	var user models.User
 	result := db.Db.Where("phone_number = ?", phoneNumber).First(&user)
