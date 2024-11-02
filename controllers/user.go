@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"yky-gin/models/dto"
 	"yky-gin/services"
 	"yky-gin/utils/resp"
 	"yky-gin/validator"
@@ -34,7 +35,7 @@ func (uc *UserController) Register(c *gin.Context) {
 	var req struct {
 		Username string `json:"username" binding:"required,min=3,max=10,starts_with_letter,alphanum"`
 		Password string `json:"password" binding:"required,min=6,max=20"`
-		Phone    string `json:"phone" binding:"required" validate:"regex=^1[3-9]\\d{9}$"`
+		Phone    string `json:"phone" binding:"required,zh_phone_number"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -51,6 +52,20 @@ func (uc *UserController) Register(c *gin.Context) {
 		"token": token,
 	}
 	resp.RespHelper.OK(c, responseData)
+}
+
+func (uc *UserController) ForgetPassword(c *gin.Context) {
+	var req dto.ForgetPasswordRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		resp.RespHelper.Fail(c, resp.RequestDataError.Code, resp.RequestDataError.Message)
+		return
+	}
+	err := uc.UserService.ForgotPassword(req)
+	if err != nil {
+		resp.RespHelper.Fail(c, resp.Error.Code, err.Error())
+		return
+	}
+	resp.RespHelper.OK(c, nil)
 }
 
 func (uc *UserController) Login(c *gin.Context) {

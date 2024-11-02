@@ -24,6 +24,7 @@ func main() {
 	logger.InitLogger()
 	if v, ok := binding.Validator.Engine().(*playgroundValidator.Validate); ok {
 		v.RegisterValidation("starts_with_letter", validator.StartsWithLetter)
+		v.RegisterValidation("zh_phone_number", validator.IsPhoneNumber)
 	}
 	r := router.Router()
 	serverConfig := configMap["server"].(map[interface{}]interface{})

@@ -18,6 +18,7 @@ func Router() *gin.Engine {
 		user := v1.Group("/user")
 		{
 			user.POST("/register", app.UserController.Register)
+			user.POST("/forget-password", app.UserController.ForgetPassword)
 			user.POST("/login", app.UserController.Login)
 		}
 		v1.Use(middlewares.JWTAuth())

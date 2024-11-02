@@ -14,13 +14,9 @@ type App struct {
 
 func NewApp() *App {
 	return &App{
-		AppVersionController: NewAppVersionController(
-			services.NewAppVersionService(&dao.AppVersionDAO{}),
-		),
-		PackagesController: NewPackagesController(
-			services.NewPackagesService(&dao.PackagesDao{}),
-		),
-		UserController:      NewUserController(services.NewUserService(&dao.UserDAO{})),
-		AppConfigController: NewAppConfigController(services.NewAppConfigService(&dao.AppConfigDAO{})),
+		AppVersionController: NewAppVersionController(services.NewAppVersionService(&dao.AppVersionDAO{})),
+		PackagesController:   NewPackagesController(services.NewPackagesService(&dao.PackagesDao{})),
+		UserController:       NewUserController(services.NewUserService(&dao.UserDAO{})),
+		AppConfigController:  NewAppConfigController(services.NewAppConfigService(&dao.AppConfigDAO{})),
 	}
 }

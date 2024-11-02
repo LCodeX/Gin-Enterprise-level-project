@@ -4,6 +4,7 @@ import (
 	"errors"
 	"yky-gin/dao"
 	"yky-gin/models"
+	"yky-gin/models/dto"
 	"yky-gin/utils"
 
 	"github.com/gin-gonic/gin"
@@ -60,4 +61,24 @@ func (s *UserService) Login(username, password string) (interface{}, error) {
 		"token":    token,
 		"userInfo": user,
 	}, nil
+}
+
+func (s *UserService) ForgotPassword(req dto.ForgetPasswordRequest) error {
+	if req.SmsCode != "test" {
+		return errors.New("sms code error")
+	}
+	user, err := s.UserDAO.FindByPhoneNumber(req.PhoneNumber)
+
+	if err != nil {
+		return errors.New("user not found")
+	}
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	user.Password = string(hashedPassword)
+	if err := s.UserDAO.Update(user); err != nil {
+		return errors.New("failed to update password")
+	}
+	return nil
 }
